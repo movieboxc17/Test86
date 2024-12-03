@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎄 Advent Calendar 🎅</title>
+    <style>
+        /* General styles */
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(to bottom, #001f3f, #011627);
+            color: #ffffff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            flex-direction: column;
+        }
+
+        #calendar-container {
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            color: #ffd700;
+            animation: glow 1.5s infinite alternate;
+        }
+
+        @keyframes glow {
+            0% { text-shadow: 0 0 15px #ffd700; }
+            100% { text-shadow: 0 0 30px #ffd700; }
+        }
+
+        #calendar {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 15px;
+            margin: 0 auto;
+            width: 95%;
+            max-width: 800px;
+        }
+
+        .hatch {
+            perspective: 1000px;
+            position: relative;
+            width: 100px;
+            height: 100px;
+            background-color: #444;
+            border: 3px solid #ffd700;
+            border-radius: 15px;
+            cursor: pointer;
+            transform: scale(1);
+            transition: transform 0.2s ease-in-out;
+            overflow: hidden;
+        }
+
+        .hatch:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 15px #ffd700;
+        }
+
+        .hatch .front, .hatch .back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 15px;
+            backface-visibility: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #ffffff;
+            transition: transform 0.6s ease-in-out;
+        }
+
+        .hatch .front {
+            background: linear-gradient(145deg, #228b22, #006400);
+            box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5);
+        }
+
+        .hatch .back {
+            background: linear-gradient(145deg, #ffd700, #ffcc33);
+            color: #2b2b2b;
+            transform: rotateY(180deg);
+        }
+
+        .hatch.open .front {
+            transform: rotateY(180deg);
+        }
+
+        .hatch.open .back {
+            transform: rotateY(0deg);
+        }
+
+        /* Popup styling */
+        #popup {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(255, 255, 255, 0.9);
+            color: #000;
+            width: 80%;
+            max-width: 400px;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+            text-align: center;
+            font-size: 1.2rem;
+            z-index: 1000;
+            display: none;
+        }
+
+        #popup h2 {
+            color: #228b22;
+        }
+
+        #popup button {
+            background: #228b22;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            margin-top: 15px;
+            font-size: 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        #popup button:hover {
+            background: #1a661a;
+        }
+
+        /* Overlay for popup */
+        #overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 999;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div id="calendar-container">
+        <h1>🎄 Advent Calendar 🎅</h1>
+        <p id="status">Loading...</p>
+        <div id="calendar">
+            <!-- Hatches will be dynamically generated -->
+        </div>
+    </div>
+
+    <div id="overlay"></div>
+    <div id="popup">
+        <h2>🎁 Surprise!</h2>
+        <p id="popup-content">This is your surprise!</p>
+        <button id="close-popup">Close</button>
+    </div>
+
+    <script>
+        const calendar = document.getElementById('calendar');
+        const statusText = document.getElementById('status');
+        const overlay = document.getElementById('overlay');
+        const popup = document.getElementById('popup');
+        const popupContent = document.getElementById('popup-content');
+        const closePopupButton = document.getElementById('close-popup');
+        const surprises = [
+            "Candy Cane Recipe! 🍭",
+            "Festive Joke: What do elves learn in school? The elf-abet! 🤶",
+            "A festive greeting: 'Wishing you a magical holiday season!' ✨",
+            "Christmas Song Recommendation: 'All I Want for Christmas Is You' 🎵",
+            "Fun Fact: Did you know? Christmas lights were invented in 1882! 🎄",
+            "Holiday Quote: 'Christmas waves a magic wand over this world.' 🌟",
+            "A warm cup of hot cocoa makes everything better! ☕"
+        ];
+
+        // Fetch the current date from the Swedish timezone
+        async function fetchServerDate() {
+            try {
+                const response = await fetch('https://worldtimeapi.org/api/timezone/Europe/Stockholm');
+                const data = await response.json();
+                const serverDate = new Date(data.datetime);
+                return serverDate.getDate();
+            } catch (error) {
+                console.error("Error fetching server time:", error);
+                alert("Could not validate the date. Please try again later.");
+                return null;
+            }
+        }
+
+        // Generate the calendar after validating the date
+        async function generateCalendar() {
+            const today = await fetchServerDate();
+            if (today === null) return;
+
+            statusText.textContent = "Enjoy your advent calendar!";
+            for (let i = 1; i <= 24; i++) {
+                const hatch = document.createElement('div');
+                hatch.classList.add('hatch');
+                hatch.dataset.day = i;
+
+                const front = document.createElement('div');
+                front.classList.add('front');
+                front.textContent = i;
+
+                const back = document.createElement('div');
+                back.classList.add('back');
+                back.textContent = "🎁";
+
+                if (i > today) {
+                    front.textContent = "🔒";
+                    front.style.background = "gray";
+                    hatch.style.pointerEvents = "none";
+                }
+
+                hatch.appendChild(front);
+                hatch.appendChild(back);
+                calendar.appendChild(hatch);
+
+                hatch.addEventListener('click', () => {
+                    hatch.classList.add('open');
+                    showPopup(`🎄 Surprise for Day ${i}: ${surprises[(i - 1) % surprises.length]}`);
+                });
+            }
+        }
+
+        // Show popup
+        function showPopup(message) {
+            popupContent.textContent = message;
+            overlay.style.display = "block";
+            popup.style.display = "block";
+
+            setTimeout(() => {
+                hidePopup();
+            }, 90000); // 1.5 minutes
+        }
+
+        // Hide popup
+        function hidePopup() {
+            overlay.style.display = "none";
+            popup.style.display = "none";
+        }
+
+        closePopupButton.addEventListener('click', hidePopup);
+
+        generateCalendar();
+    </script>
+</body>
+</html>
