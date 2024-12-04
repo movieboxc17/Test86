@@ -8,14 +8,14 @@
         /* General styles */
         body {
             font-family: 'Arial', sans-serif;
-            background: linear-gradient(to bottom, #001f3f, #011627);
+            background: linear-gradient(to bottom, #011627, #001f3f);
             color: #ffffff;
             display: flex;
             justify-content: center;
             align-items: center;
+            flex-direction: column;
             min-height: 100vh;
             margin: 0;
-            flex-direction: column;
         }
 
         #calendar-container {
@@ -23,15 +23,16 @@
         }
 
         h1 {
-            font-size: 3rem;
+            font-size: 3.5rem;
             margin-bottom: 20px;
             color: #ffd700;
-            animation: glow 1.5s infinite alternate;
+            text-shadow: 0 0 20px #ffd700, 0 0 30px #ffcc33;
+            animation: glow 2s infinite alternate;
         }
 
         @keyframes glow {
-            0% { text-shadow: 0 0 15px #ffd700; }
-            100% { text-shadow: 0 0 30px #ffd700; }
+            0% { text-shadow: 0 0 20px #ffd700, 0 0 30px #ffcc33; }
+            100% { text-shadow: 0 0 30px #ffd700, 0 0 50px #ffcc33; }
         }
 
         #calendar {
@@ -44,22 +45,25 @@
         }
 
         .hatch {
-            perspective: 1000px;
             position: relative;
             width: 100px;
             height: 100px;
-            background-color: #444;
+            background: linear-gradient(145deg, #005f73, #0a9396);
             border: 3px solid #ffd700;
             border-radius: 15px;
             cursor: pointer;
             transform: scale(1);
-            transition: transform 0.2s ease-in-out;
+            transition: transform 0.3s ease, box-shadow 0.4s ease;
+            display: flex;
+            justify-content: center;
+            align-items: center;
             overflow: hidden;
+            perspective: 1000px;
         }
 
         .hatch:hover {
-            transform: scale(1.1);
-            box-shadow: 0 0 15px #ffd700;
+            transform: scale(1.15);
+            box-shadow: 0 0 20px #ffd700, 0 0 40px #ffd700;
         }
 
         .hatch .front, .hatch .back {
@@ -71,15 +75,16 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            font-size: 1.8rem;
+            font-size: 2rem;
             font-weight: bold;
             color: #ffffff;
             transition: transform 0.6s ease-in-out;
         }
 
         .hatch .front {
-            background: linear-gradient(145deg, #228b22, #006400);
-            box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5);
+            background: linear-gradient(145deg, #2a9d8f, #264653);
+            box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.5);
+            text-shadow: 0 0 5px #ffffff;
         }
 
         .hatch .back {
@@ -101,10 +106,10 @@
             position: fixed;
             top: 50%;
             left: 50%;
-            transform: translate(-50%, -50%);
-            background: rgba(255, 255, 255, 0.9);
+            transform: translate(-50%, -50%) scale(0);
+            background: rgba(255, 255, 255, 0.95);
             color: #000;
-            width: 80%;
+            width: 90%;
             max-width: 400px;
             padding: 20px;
             border-radius: 15px;
@@ -113,14 +118,33 @@
             font-size: 1.2rem;
             z-index: 1000;
             display: none;
+            animation: popupShow 0.5s forwards;
+        }
+
+        @keyframes popupShow {
+            0% {
+                transform: translate(-50%, -50%) scale(0);
+                opacity: 0;
+            }
+            100% {
+                transform: translate(-50%, -50%) scale(1);
+                opacity: 1;
+            }
         }
 
         #popup h2 {
-            color: #228b22;
+            color: #e63946;
+            text-shadow: 0 0 10px #e63946;
+            animation: glowPopup 1.5s infinite alternate;
+        }
+
+        @keyframes glowPopup {
+            0% { text-shadow: 0 0 10px #e63946; }
+            100% { text-shadow: 0 0 20px #ff0000; }
         }
 
         #popup button {
-            background: #228b22;
+            background: #457b9d;
             color: #fff;
             border: none;
             padding: 10px 20px;
@@ -128,10 +152,11 @@
             font-size: 1rem;
             border-radius: 8px;
             cursor: pointer;
+            transition: background-color 0.3s ease-in-out;
         }
 
         #popup button:hover {
-            background: #1a661a;
+            background: #1d3557;
         }
 
         /* Overlay for popup */
@@ -141,7 +166,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.7);
+            background: rgba(0, 0, 0, 0.8);
             z-index: 999;
             display: none;
         }
@@ -170,38 +195,37 @@
         const popup = document.getElementById('popup');
         const popupContent = document.getElementById('popup-content');
         const closePopupButton = document.getElementById('close-popup');
-        const surprises = [
-    "Candy Cane Recipe! 🍭 Ingredients: 200g sugar, 120ml water, 60ml corn syrup, 1/2 tsp peppermint extract, red and white food coloring.",
-    "Sugar Cookie Recipe! 🍪 Ingredients: 250g plain flour, 1/2 tsp baking powder, 1/2 tsp salt, 115g butter, 200g sugar, 1 egg, 1 tsp vanilla extract.",
-    "Gingerbread Man Recipe! 🎄 Ingredients: 300g plain flour, 1 tsp baking soda, 1 tsp cinnamon, 1 tsp ginger, 1/2 tsp cloves, 115g butter, 100g brown sugar, 100ml molasses, 1 egg.",
-    "Yule Log Cake Recipe! 🍰 Ingredients: 6 eggs, 200g sugar, 90g plain flour, 30g cocoa powder, 1/2 tsp baking powder, whipped cream, chocolate ganache.",
-    "Peppermint Bark Recipe! 🍬 Ingredients: 200g dark chocolate, 200g white chocolate, crushed candy canes.",
-    "Holiday Cupcake Recipe! 🧁 Ingredients: 120g plain flour, 1 tsp baking powder, 115g butter, 200g sugar, 2 eggs, 120ml milk, festive sprinkles.",
-    "Shortbread Cookie Recipe! 🥠 Ingredients: 250g plain flour, 60g powdered sugar, 225g butter, 1 tsp vanilla extract.",
-    "Classic Fruitcake Recipe! 🍒 Ingredients: 250g plain flour, 1 tsp baking powder, 225g butter, 200g sugar, 4 eggs, 120ml orange juice, 300g mixed dried fruits.",
-    "Holiday Pie Recipe! 🥧 Ingredients: 250g plain flour, 115g butter, 60ml cold water (for crust), your favorite pie filling.",
-    "Christmas Donut Recipe! 🍩 Ingredients: 250g plain flour, 100g sugar, 1 tsp baking powder, 120ml milk, 1 egg, 60g butter.",
-    "Snowball Cookie Recipe! ❄️ Ingredients: 125g plain flour, 115g butter, 60g powdered sugar, 1 tsp vanilla extract, 30g chopped nuts.",
-    "Holiday Brownie Recipe! 🍫 Ingredients: 115g butter, 200g sugar, 2 eggs, 40g cocoa powder, 65g plain flour, 1/4 tsp baking powder, 1/4 tsp salt.",
-    "Festive Cheesecake Recipe! 🍮 Ingredients: 500g cream cheese, 100g sugar, 150g graham cracker crumbs, 1 tsp vanilla extract, 2 eggs.",
-    "Cranberry Muffin Recipe! 🥯 Ingredients: 250g plain flour, 100g sugar, 1/2 tsp baking soda, 1/2 tsp salt, 115g butter, 120g fresh cranberries, 1 egg, 120ml milk.",
-    "Holiday Bread Recipe! 🍞 Ingredients: 375g plain flour, 50g sugar, 1 tsp yeast, 120ml warm milk, 1 egg, 60g butter.",
-    "Festive Pancake Recipe! 🥞 Ingredients: 125g plain flour, 1 tsp baking powder, 1/4 tsp salt, 1 egg, 250ml milk, festive sprinkles.",
-    "Christmas Cake Pops Recipe! 🎂 Ingredients: 1 sponge cake (crumbled), 100g frosting, 200g melted chocolate, sprinkles, lollipop sticks.",
-    "Festive Waffles Recipe! 🧇 Ingredients: 250g plain flour, 1 tsp baking powder, 1/2 tsp salt, 50g sugar, 250ml milk, 2 eggs, 60g butter, holiday toppings.",
-    "Chocolate Crinkle Cookie Recipe! 🍪 Ingredients: 200g plain flour, 60g cocoa powder, 1 tsp baking powder, 150g sugar, 2 eggs, 60g butter, powdered sugar for rolling.",
-    "Cinnamon Roll Recipe! 🍥 Ingredients: 400g plain flour, 50g sugar, 7g dry yeast, 1/2 tsp salt, 240ml milk, 60g butter, 1 egg. Filling: 50g butter, 100g brown sugar, 1 tbsp cinnamon.",
-    "Eggnog Custard Tart Recipe! 🥧 Ingredients: 250g plain flour, 115g butter, 60ml water (for crust). Filling: 300ml milk, 100ml cream, 50g sugar, 2 eggs, 1 tsp nutmeg.",
-    "Spiced Apple Cake Recipe! 🍎 Ingredients: 250g plain flour, 2 tsp baking powder, 1/2 tsp cinnamon, 115g butter, 200g sugar, 2 eggs, 120ml milk, 2 apples (peeled and chopped).",
-    "Vanilla Bean Biscotti Recipe! 🍪 Ingredients: 250g plain flour, 1 tsp baking powder, 100g sugar, 2 eggs, 60g butter, 1 vanilla bean (seeds scraped).",
-    "Lemon Drizzle Loaf Recipe! 🍋 Ingredients: 250g plain flour, 2 tsp baking powder, 115g butter, 200g sugar, 2 eggs, 120ml milk, zest of 1 lemon, 50ml lemon juice (for drizzle)."
+const surprises = [
+    "Candy Cane Recipe! 🍭",
+    "Festive Joke: What do elves learn in school? The elf-abet! 🤶",
+    "A festive greeting: 'Wishing you a magical holiday season!' ✨",
+    "Christmas Song Recommendation: 'All I Want for Christmas Is You' 🎵",
+    "Fun Fact: Did you know? Christmas lights were invented in 1882! 🎄",
+    "Holiday Quote: 'Christmas waves a magic wand over this world.' 🌟",
+    "A warm cup of hot cocoa makes everything better! ☕",
+    "Sugar Cookie Recipe! 🥠 Ingredients: 2 cups flour, 1/2 tsp baking powder, 1/2 tsp salt, 1/2 cup butter, 1 cup sugar, 1 egg, 1 tsp vanilla.",
+    "Gingerbread Man Recipe! 🍪 Ingredients: 3 cups flour, 1 tsp baking soda, 1 tsp cinnamon, 1 tsp ginger, 1/2 tsp cloves, 1/2 cup butter, 1/2 cup brown sugar, 1/2 cup molasses, 1 egg.",
+    "Yule Log Cake Recipe! 🍰 Ingredients: 6 eggs, 1 cup sugar, 3/4 cup flour, 1/4 cup cocoa, 1/2 tsp baking powder, whipped cream, chocolate ganache.",
+    "Peppermint Bark Recipe! 🍬 Ingredients: 1 cup dark chocolate, 1 cup white chocolate, crushed candy canes.",
+    "Holiday Cupcake Recipe! 🧁 Ingredients: 1 cup flour, 1 tsp baking powder, 1/2 cup butter, 1 cup sugar, 2 eggs, 1/2 cup milk, festive sprinkles.",
+    "Shortbread Cookie Recipe! 🥠 Ingredients: 2 cups flour, 1/2 cup powdered sugar, 1 cup butter, 1 tsp vanilla.",
+    "Classic Fruitcake Recipe! 🍒 Ingredients: 2 cups flour, 1 tsp baking powder, 1 cup butter, 1 cup sugar, 4 eggs, 1/2 cup orange juice, mixed dried fruits.",
+    "Holiday Pie Recipe! 🥧 Ingredients: 2 cups flour, 1/2 cup butter, 1/4 cup water (for crust), your favorite pie filling.",
+    "Christmas Donut Recipe! 🍩 Ingredients: 2 cups flour, 1/2 cup sugar, 1 tsp baking powder, 1/2 cup milk, 1 egg, 1/4 cup butter.",
+    "Snowball Cookie Recipe! ❄️ Ingredients: 1 cup flour, 1/2 cup butter, 1/4 cup powdered sugar, 1 tsp vanilla, 1/4 cup chopped nuts.",
+    "Holiday Brownie Recipe! 🍫 Ingredients: 1/2 cup butter, 1 cup sugar, 2 eggs, 1/3 cup cocoa powder, 1/2 cup flour, 1/4 tsp baking powder, 1/4 tsp salt.",
+    "Festive Cheesecake Recipe! 🍮 Ingredients: 2 cups cream cheese, 1/2 cup sugar, 1/2 cup graham cracker crumbs, 1 tsp vanilla, 2 eggs.",
+    "Cranberry Muffin Recipe! 🥯 Ingredients: 2 cups flour, 1/2 cup sugar, 1/2 tsp baking soda, 1/2 tsp salt, 1/2 cup butter, 1 cup fresh cranberries, 1 egg, 1/2 cup milk.",
+    "Holiday Bread Recipe! 🍞 Ingredients: 3 cups flour, 1/4 cup sugar, 1 tsp yeast, 1/2 cup warm milk, 1 egg, 1/4 cup butter.",
+    "Festive Pancake Recipe! 🥞 Ingredients: 1 cup flour, 1 tsp baking powder, 1/4 tsp salt, 1 egg, 1 cup milk, festive sprinkles.",
+    "Christmas Cake Pops Recipe! 🎂 Ingredients: 1 box cake mix, frosting, melted chocolate, sprinkles, lollipop sticks.",
+    "Festive Waffles Recipe! 🧇 Ingredients: 2 cups flour, 1 tsp baking powder, 1/2 tsp salt, 1/4 cup sugar, 1 cup milk, 2 eggs, 1/4 cup butter, holiday toppings."
 ];
-
-        // Generate the calendar and validate hatches based on date
+ 
         function generateCalendar() {
             const today = new Date();
             const currentDay = today.getDate();
-            const currentMonth = today.getMonth() + 1; // Months are zero-indexed
+            const currentMonth = today.getMonth() + 1;
 
             if (currentMonth !== 12) {
                 statusText.textContent = "It's not December yet! Come back later!";
@@ -239,18 +263,12 @@
             }
         }
 
-        // Show popup
         function showPopup(message) {
             popupContent.textContent = message;
             overlay.style.display = "block";
             popup.style.display = "block";
-
-            setTimeout(() => {
-                hidePopup();
-            }, 90000); // 1.5 minutes
         }
 
-        // Hide popup
         function hidePopup() {
             overlay.style.display = "none";
             popup.style.display = "none";
