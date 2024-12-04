@@ -171,14 +171,31 @@
         const popupContent = document.getElementById('popup-content');
         const closePopupButton = document.getElementById('close-popup');
         const surprises = [
-            "Candy Cane Recipe! 🍭",
-            "Festive Joke: What do elves learn in school? The elf-abet! 🤶",
-            "A festive greeting: 'Wishing you a magical holiday season!' ✨",
-            "Christmas Song Recommendation: 'All I Want for Christmas Is You' 🎵",
-            "Fun Fact: Did you know? Christmas lights were invented in 1882! 🎄",
-            "Holiday Quote: 'Christmas waves a magic wand over this world.' 🌟",
-            "A warm cup of hot cocoa makes everything better! ☕"
-        ];
+    "Candy Cane Recipe! 🍭 Ingredients: 200g sugar, 120ml water, 60ml corn syrup, 1/2 tsp peppermint extract, red and white food coloring.",
+    "Sugar Cookie Recipe! 🍪 Ingredients: 250g plain flour, 1/2 tsp baking powder, 1/2 tsp salt, 115g butter, 200g sugar, 1 egg, 1 tsp vanilla extract.",
+    "Gingerbread Man Recipe! 🎄 Ingredients: 300g plain flour, 1 tsp baking soda, 1 tsp cinnamon, 1 tsp ginger, 1/2 tsp cloves, 115g butter, 100g brown sugar, 100ml molasses, 1 egg.",
+    "Yule Log Cake Recipe! 🍰 Ingredients: 6 eggs, 200g sugar, 90g plain flour, 30g cocoa powder, 1/2 tsp baking powder, whipped cream, chocolate ganache.",
+    "Peppermint Bark Recipe! 🍬 Ingredients: 200g dark chocolate, 200g white chocolate, crushed candy canes.",
+    "Holiday Cupcake Recipe! 🧁 Ingredients: 120g plain flour, 1 tsp baking powder, 115g butter, 200g sugar, 2 eggs, 120ml milk, festive sprinkles.",
+    "Shortbread Cookie Recipe! 🥠 Ingredients: 250g plain flour, 60g powdered sugar, 225g butter, 1 tsp vanilla extract.",
+    "Classic Fruitcake Recipe! 🍒 Ingredients: 250g plain flour, 1 tsp baking powder, 225g butter, 200g sugar, 4 eggs, 120ml orange juice, 300g mixed dried fruits.",
+    "Holiday Pie Recipe! 🥧 Ingredients: 250g plain flour, 115g butter, 60ml cold water (for crust), your favorite pie filling.",
+    "Christmas Donut Recipe! 🍩 Ingredients: 250g plain flour, 100g sugar, 1 tsp baking powder, 120ml milk, 1 egg, 60g butter.",
+    "Snowball Cookie Recipe! ❄️ Ingredients: 125g plain flour, 115g butter, 60g powdered sugar, 1 tsp vanilla extract, 30g chopped nuts.",
+    "Holiday Brownie Recipe! 🍫 Ingredients: 115g butter, 200g sugar, 2 eggs, 40g cocoa powder, 65g plain flour, 1/4 tsp baking powder, 1/4 tsp salt.",
+    "Festive Cheesecake Recipe! 🍮 Ingredients: 500g cream cheese, 100g sugar, 150g graham cracker crumbs, 1 tsp vanilla extract, 2 eggs.",
+    "Cranberry Muffin Recipe! 🥯 Ingredients: 250g plain flour, 100g sugar, 1/2 tsp baking soda, 1/2 tsp salt, 115g butter, 120g fresh cranberries, 1 egg, 120ml milk.",
+    "Holiday Bread Recipe! 🍞 Ingredients: 375g plain flour, 50g sugar, 1 tsp yeast, 120ml warm milk, 1 egg, 60g butter.",
+    "Festive Pancake Recipe! 🥞 Ingredients: 125g plain flour, 1 tsp baking powder, 1/4 tsp salt, 1 egg, 250ml milk, festive sprinkles.",
+    "Christmas Cake Pops Recipe! 🎂 Ingredients: 1 sponge cake (crumbled), 100g frosting, 200g melted chocolate, sprinkles, lollipop sticks.",
+    "Festive Waffles Recipe! 🧇 Ingredients: 250g plain flour, 1 tsp baking powder, 1/2 tsp salt, 50g sugar, 250ml milk, 2 eggs, 60g butter, holiday toppings.",
+    "Chocolate Crinkle Cookie Recipe! 🍪 Ingredients: 200g plain flour, 60g cocoa powder, 1 tsp baking powder, 150g sugar, 2 eggs, 60g butter, powdered sugar for rolling.",
+    "Cinnamon Roll Recipe! 🍥 Ingredients: 400g plain flour, 50g sugar, 7g dry yeast, 1/2 tsp salt, 240ml milk, 60g butter, 1 egg. Filling: 50g butter, 100g brown sugar, 1 tbsp cinnamon.",
+    "Eggnog Custard Tart Recipe! 🥧 Ingredients: 250g plain flour, 115g butter, 60ml water (for crust). Filling: 300ml milk, 100ml cream, 50g sugar, 2 eggs, 1 tsp nutmeg.",
+    "Spiced Apple Cake Recipe! 🍎 Ingredients: 250g plain flour, 2 tsp baking powder, 1/2 tsp cinnamon, 115g butter, 200g sugar, 2 eggs, 120ml milk, 2 apples (peeled and chopped).",
+    "Vanilla Bean Biscotti Recipe! 🍪 Ingredients: 250g plain flour, 1 tsp baking powder, 100g sugar, 2 eggs, 60g butter, 1 vanilla bean (seeds scraped).",
+    "Lemon Drizzle Loaf Recipe! 🍋 Ingredients: 250g plain flour, 2 tsp baking powder, 115g butter, 200g sugar, 2 eggs, 120ml milk, zest of 1 lemon, 50ml lemon juice (for drizzle)."
+];
 
         // Generate the calendar and validate hatches based on date
         function generateCalendar() {
